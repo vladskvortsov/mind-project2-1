@@ -20,7 +20,7 @@ jobs:
 
     - name: Create ECR Repository
       run: |
-        REPO_NAME="project1-2-backend"
+        REPO_NAME="project2-1"
         
         # Check if the repository already exists
         EXISTING_REPO=$(aws ecr describe-repositories --repository-names $REPO_NAME --query "repositories[0].repositoryName" --output text 2>/dev/null || echo "None")
@@ -47,7 +47,7 @@ jobs:
          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
          aws_default_region: ${{ secrets.AWS_REGION }}
-         aws_ecr_repo_name: project1-2-backend
+         aws_ecr_repo_name: project2-1
          image_tag: backend-rds
          working_directory: ./backend_rds/
 
@@ -66,6 +66,25 @@ jobs:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_default_region: ${{ secrets.AWS_REGION }}
-          aws_ecr_repo_name: project1-2-backend
+          aws_ecr_repo_name: project2-1
           image_tag: backend-redis
           working_directory: ./backend_redis/
+
+
+  deploy-frontend-to-ecr:
+    runs-on: ubuntu-latest
+    needs: create-ecr-repository
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v3
+
+      - id: ecr-publish
+        name: Build image
+        uses: bitovi/github-actions-ecr-publish@v0.1.0
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_default_region: ${{ secrets.AWS_REGION }}
+          aws_ecr_repo_name: project2-1
+          image_tag: frontend
+          working_directory: ./frontend/
