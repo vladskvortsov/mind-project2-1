@@ -30,12 +30,12 @@ services:
     networks:
       - backend
 
-  backend_rds:
+  backend-rds:
     env_file:
       - .env
     build:
       context: ../backend_rds
-    container_name: backend_rds
+    container_name: backend-rds
     depends_on:
       - postgres
     ports:
@@ -44,12 +44,12 @@ services:
       - backend
     entrypoint: ["sh", "-c", "sleep 10 && python manage.py runserver 0.0.0.0:8001"]
 
-  backend_redis:
+  backend-redis:
     env_file:
       - .env
     build:
       context: ../backend_redis
-    container_name: backend_redis
+    container_name: backend-redis
     depends_on:
       - redis
     ports:
