@@ -5,8 +5,9 @@ on:
   #   branches:
   #     - main
   #   paths:
-  #     - 'project1/backend_redis/Dockerfile'
-  #     - 'project1/backend_rds/Dockerfile'
+  #     - 'backend_redis/*'
+  #     - 'backend_rds/*'
+  #     - 'frontend/*'
 jobs:
   create-frontend-ecr-repository:
    runs-on: ubuntu-latest
@@ -208,6 +209,7 @@ jobs:
              --image-manifest "$IMAGE_MANIFEST"
 
   update-frontend-service-in-ecs:
+    continue-on-error: true
     runs-on: ubuntu-latest
     needs: deploy-frontend-to-ecr
 
@@ -224,6 +226,7 @@ jobs:
           aws ecs update-service --cluster project2-1-cluster --service frontend --force-new-deployment
 
   update-rds-backend-service-in-ecs:
+    continue-on-error: true
     runs-on: ubuntu-latest
     needs: deploy-rds-backend-to-ecr
 
@@ -240,6 +243,7 @@ jobs:
           aws ecs update-service --cluster project2-1-cluster --service backend-rds --force-new-deployment
 
   update-redis-backend-service-in-ecs:
+    continue-on-error: true
     runs-on: ubuntu-latest
     needs: deploy-redis-backend-to-ecr
 
